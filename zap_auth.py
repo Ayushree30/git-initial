@@ -14,6 +14,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import browserstorage
 import pyotp
+from webdriver_manager.chrome import ChromeDriverManager
 
 
 class ZapAuth:
@@ -63,8 +64,7 @@ class ZapAuth:
         options.add_argument('--ignore-certificate-errors')
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
-
-        self.driver = webdriver.Chrome(options=options)
+        self.driver = webdriver.Chrome(ChromeDriverManager().install(),options=options)
         self.driver.set_window_size(1920, 1080)
         self.driver.maximize_window()
 
@@ -224,7 +224,7 @@ class ZapAuth:
         if submit_action == "click":
             element = self.find_element(
                 submit_field_name, "submit", "//*[@type='submit' or @type='button' or button]")
-            element.click()
+            self.driver.execute_script("arguments[0].click();", element)
             logging.info('Clicked the %s element', submit_field_name)
         elif username_element:
             username_element.submit()
